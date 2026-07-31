@@ -1,0 +1,1 @@
+# keeps the empty Memory/ directory in git; actual memory files are gitignored

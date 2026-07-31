@@ -1,0 +1,46 @@
+# ---- Secrets / config ----
+config.py
+.env
+*.key
+
+# ---- The persona's private memory (NEVER commit) ----
+Memory/*
+!Memory/.gitkeep
+
+# ---- Generated / runtime data ----
+*.json
+!package.json
+*.log
+dream_log.txt
+
+# ---- Media & model weights (heavy; user supplies) ----
+audio_library/
+Saved audio/
+voice_references/
+base_videos/
+video_library/
+video_cache/
+temp/
+models/
+gfpgan/
+MuseTalk/
+*.wav
+*.mp3
+*.mp4
+*.png
+*.jpg
+*.bin
+
+# ---- Python ----
+__pycache__/
+*.pyc
+*.pyo
+.venv/
+venv/
+env/
+
+# ---- OS / editor ----
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
