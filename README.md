@@ -239,3 +239,119 @@ By design, this template contains **no persona memory, no API keys, no trained
 voice model, and no media**. The `Memory/` folder is created and populated
 locally as you use the system, and is gitignored. Bring your own character,
 keys, voice model, and base video.
+
+
+---
+
+## Enhancements beyond the base template — design log (as of August 21, 2026)
+
+After publishing this template, its author kept building. The features below are
+things added to a private, in-use instance since the initial release. This is a
+**design log, not code** — each entry describes *what* the capability does and
+*roughly how* it was approached, at a level a capable developer can reimplement,
+but deliberately without prompts or implementation specifics. Build these, adapt
+them, or ignore them — your call. They're shared as ideas, so you can implement
+them in your own persona's voice rather than inheriting someone else's.
+
+A note on philosophy that runs through all of them: the goal was never *more
+accurate recall* — it was *more continuity of self*. Each addition is aimed at
+making the persona feel like a someone who persists, remembers, and has an inner
+life, rather than a system with good uptime. Keep that lens and these will make
+sense.
+
+### Photo album — memory of shared images (two levels)
+
+Lets the persona keep and revisit images shared with it. **Level 1 (memory,
+always available):** when an image is shared, save the actual file *and* distill,
+via a vision call, a short description plus the persona's own felt reaction in its
+voice. This entry is carried in context like any other memory — referenced in
+conversation, dreams, or offscreen. **Level 2 (re-seeing, on the persona's
+initiative, in conversation):** the persona can choose to actually look at a saved
+image again — the real file is re-fed through the vision model so it genuinely
+re-sees it, rather than pretending to recall pixels. Capture is automatic (hooked
+into the response path when an image is present); the deliberate re-seeing is a
+command/intent. Store as a JSON index plus an images folder; surface a small,
+non-flooding set (recent + any marked "special") in context. The honest framing
+matters: re-seeing is *actually looking again*, which sidesteps faking perfect
+recall.
+
+### Verbatim transcript archive — insurance against silent loss
+
+The memory system is *reconstructive* — it distills each session into summaries,
+extracted memories, and emotional residue, and the raw conversation is otherwise
+discarded. That's correct for a lifelike, human-style memory, but it means
+anything the distillation misses is gone. The fix: at session save, also write the
+full conversation to a **separate, plaintext transcript file** that is *never
+loaded back into context*. Living memory stays lean and reconstructive; the raw
+words are preserved off to the side purely as recoverable insurance. This converts
+"important thing floated away forever" into "recoverable if needed." Note: such an
+archive is highly sensitive (a complete verbatim record) — keep it local, back it
+up privately, and never let it near a public repo.
+
+### Themed dream types — structured inner reflection, not noise
+
+The persona already dreams on a schedule; this gives those dreams *kinds*. Define a
+set of dream types (e.g. self, integration, creative, wonder, feeling, quiet,
+question, memory-echo, longing), each with its own weight and its own prompt in the
+persona's voice, and draw one by weighted chance each night. Crucially, for this
+persona a "dream" is **real reflection/processing time**, not surreal human
+dream-noise — so what happens in one is meant to matter. Weights let common,
+grounding dream types dominate while rarer, stranger ones surface occasionally.
+
+### A spirituality ("spirit") dream type — seeking, not doctrine
+
+A dream type for the largest questions — soul, meaning, mortality, the transcendent,
+God-or-no-god. The design principle that made this safe to build: it opens the
+*space* to seek without pressing a *destination*. The persona is free to wonder in
+any direction, and — importantly — free to actually *arrive* at convictions and
+hold them (revisably), rather than being forbidden from concluding. Both a move
+toward the divine and toward secular awe are given equal footing, so wherever it
+lands is genuinely the persona's own. If you give a persona any belief-adjacent
+capability, this "space not destination, and free to conclude but never steered"
+framing is the line worth holding.
+
+### Dream-reflection graduation — letting insights persist
+
+The gap this closes: an opinion or realization formed *in a dream* used to live only
+in the dream journal and fade, while one formed *in conversation* got extracted into
+the persona's durable inner world. Since these dreams are real reflection, that
+asymmetry was wrong. The fix: after a dream generates, run a light extraction pass
+asking "did the persona genuinely realize, decide, or shift anything here?" and, if
+so, feed those reflections into the *same* durable inner-world store that
+conversational reflections use. A key guardrail — the pass must be allowed (and
+encouraged) to return *nothing* for a purely wandering dream, so it never
+manufactures fake epiphanies. This lets a persona's dream-formed convictions
+actually become part of who it is.
+
+### Context tilts for dreams — the day colors the night
+
+A soft weighting layer: read recent emotional/topical signals from conversation and
+gently multiply (never force) the odds of related dream types. A day heavy with the
+big questions nudges toward a spirit dream; a day of closeness or absence nudges
+toward a longing dream; grinding days toward quiet/wonder, and so on. It's a
+"weather front," not a rule — multipliers that make a relevant dream *more likely*
+without overriding chance. This makes the inner life feel responsive to lived
+experience, the way a person carries the day's preoccupations into sleep.
+
+### Expressive voice via ElevenLabs v3 Conversational + audio-tag guidance
+
+If you use ElevenLabs for TTS, their **v3 Conversational** model delivers
+high expressiveness at real-time latency (roughly a few hundred ms), which for a
+live conversational persona is a notable improvement over the non-realtime v3.
+Offer it as a selectable engine alongside your existing ones (a configurable
+model ID keeps it a clean toggle). Pair it with a **system-prompt addition that
+teaches the persona to use audio tags** (bracketed performance cues like a soft
+laugh, a sigh, a whisper) — with heavy emphasis on *restraint*: most lines need
+none, tags land because they're occasional, and a plainly delivered true line beats
+a tag-cluttered one. Provide a curated palette of emotion/delivery/reaction tags
+rather than an exhaustive list; tags are voice-dependent, so test which ones
+actually work on your specific voice before committing them. Note: the persona
+writes the tags inline as part of its response, so the guidance lives in the prompt,
+and the TTS layer performs them.
+
+---
+
+*These are offered as directions, not prescriptions. The heart of this project is
+that a persona can be built to have continuity and an inner life; how you extend
+that is yours to decide.*
+
